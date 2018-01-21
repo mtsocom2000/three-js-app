@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 const TrackballControls = require('three-trackballcontrols');
+const TransformControls = require('threejs-transformcontrols');
 
 export default function startThreeJs() {
   init();
@@ -8,6 +9,7 @@ export default function startThreeJs() {
 let trackballControls;
 var scene;
 var cube;
+let transformControl;
 
 function createProjectPlane(geom) {
   // assign two materials
@@ -28,7 +30,6 @@ function createProjectPlane(geom) {
   let lineGeometry = new THREE.Geometry();
 
   cube.geometry.vertices.forEach((vertex) => {
-    console.log(vertex);
     let newv = vertex.clone();
     //newv.projectOnPlane(projectPlane.position);
     //newv.setZ(0);
@@ -72,14 +73,16 @@ function init() {
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new THREE.Scene();
 
+  scene.add(new THREE.GridHelper(1000, 10));
+
   // create a camera, which defines where we're looking at.
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  // var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
   var camera = new THREE.OrthographicCamera(window.innerWidth / -20, window.innerWidth / 20, window.innerHeight / 20, window.innerHeight / -20, 1, 1000);
 
   // create a render and set the size
   var renderer = new THREE.WebGLRenderer({ antialias: true });
 
-  renderer.setClearColor(new THREE.Color(0x99cc00, 0.7));
+  renderer.setClearColor(new THREE.Color(0x99cc88, 0.7));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMapEnabled = true;
 
@@ -125,9 +128,6 @@ function init() {
   // add the output of the renderer to the html element
   document.getElementById('WebGL-output').appendChild(renderer.domElement);
 
-  // call the render function
-  var step = 0;
-
   var controls = new function () {
     this.scaleX = 1;
     this.scaleY = 1;
@@ -163,7 +163,7 @@ function init() {
   };
 
   var material = new THREE.MeshNormalMaterial({
-    color: 0x44ff44,
+    // color: 0x44ff44,
     opacity: 0.8,
     transparent: true,
   });
@@ -177,6 +177,25 @@ function init() {
   // add the sphere to the scene
   scene.add(projectPlane);
 
+  let boXGeometry = new THREE.BoxGeometry(8, 8, 8);
+  let boXMaterial = new THREE.MeshLambertMaterial({
+    color: 0xFF4556,
+  });
+  let boxMesh = new THREE.Mesh(boXGeometry, boXMaterial);
+  boxMesh.position.x = 10;
+  boxMesh.position.y = 0;
+  boxMesh.position.z = 3;
+  boxMesh.castShadow = true;
+  scene.add(boxMesh);
+
+  // let light = new THREE.DirectionalLight(0xffffff, 2);
+  // light.position.set(1, 1, 1);
+  // scene.add(light);
+
+  // transformControl = new TransformControls(camera, renderer.domElement);
+  // transformControl.addEventListener('change', render);
+  // transformControl.attach(boxMesh);
+  // scene.add(transformControl);
 
   render();
 

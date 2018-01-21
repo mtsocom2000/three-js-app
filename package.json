@@ -9,7 +9,8 @@
     "react-dom": "^16.2.0",
     "react-scripts": "1.0.17",
     "three": "^0.89.0",
-    "three-trackballcontrols": "0.0.7"
+    "three-trackballcontrols": "0.0.7",
+    "threejs-transformcontrols": "^0.83.0"
   },
   "scripts": {
     "start": "react-scripts start",
