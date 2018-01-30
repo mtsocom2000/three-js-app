@@ -65,55 +65,62 @@ function addTrackBall(camera) {
   trackballControls.dynamicDampingFactor = 0.3;
 }
 
-// once everything is loaded, we run our Three.js stuff.
+function createMeshes() {
+  for (let i=0; i < 100; i++) {
+    const geometry = new THREE.BoxGeometry(5, 8, 3);
+    const material = new THREE.MeshLambertMaterial({
+      color: Math.random() * 0xffffff,
+      // opacity: 0.8,
+      // transparent: true,
+    });
+    cube = new THREE.Mesh(geometry, material);
+    cube.name = `mycube ${i}`;
+    cube.position.x = Math.random(100) * i;
+    cube.position.y = Math.random(100) * i;
+    cube.position.z = Math.random(100) * i;
+    cube.castShadow = true;
+    scene.add(cube);
+  }
+}
+
 function init() {
-
-  var stats = initStats();
-
-  // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new THREE.Scene();
-
-  scene.add(new THREE.GridHelper(1000, 10));
-
-  // create a camera, which defines where we're looking at.
+  // scene.add(new THREE.GridHelper(1000, 100));
   // var camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
-  var camera = new THREE.OrthographicCamera(window.innerWidth / -20, window.innerWidth / 20, window.innerHeight / 20, window.innerHeight / -20, 1, 1000);
+  const camera = new THREE.OrthographicCamera(window.innerWidth / -20, window.innerWidth / 20, window.innerHeight / 20, window.innerHeight / -20, 1, 1000);
+  // position and point the camera to the center of the scene
+  camera.position.x = 30;
+  camera.position.y = 40;
+  camera.position.z = 30;
+  camera.lookAt(scene.position);
+  addTrackBall(camera);
 
-  // create a render and set the size
-  var renderer = new THREE.WebGLRenderer({ antialias: true });
-
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setClearColor(new THREE.Color(0x99cc88, 0.7));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMapEnabled = true;
 
-  // create the ground plane
-  var planeGeometry = new THREE.PlaneGeometry(70, 70, 1, 1);
-  var planeMaterial = new THREE.MeshNormalMaterial({
+  // the ground plane
+  const planeGeometry = new THREE.PlaneGeometry(70, 70, 1, 1);
+  const planeMaterial = new THREE.MeshNormalMaterial({
     color: 0xffffff,
     opacity: 0.6,
   });
   planeMaterial.side = THREE.DoubleSide;
   planeMaterial.opacity = 0.7;
   planeMaterial.transparent = true;
-  var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.receiveShadow = true;
+  const groundPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+  groundPlane.receiveShadow = true;
+  groundPlane.name = 'groundPlane';
 
   // rotate and position the plane
-  plane.rotation.x = -0.5 * Math.PI;
-  plane.position.x = 0;
-  plane.position.y = 0;
-  plane.position.z = 0;
+  groundPlane.rotation.x = 0.5 * Math.PI;
+  groundPlane.position.x = 0;
+  groundPlane.position.y = 0;
+  groundPlane.position.z = 0;
 
   // add the plane to the scene
-  scene.add(plane);
-
-  // position and point the camera to the center of the scene
-  camera.position.x = -30;
-  camera.position.y = 40;
-  camera.position.z = 30;
-  camera.lookAt(scene.position);
-
-  addTrackBall(camera);
+  scene.add(groundPlane);
 
   // add subtle ambient lighting
   var ambientLight = new THREE.AmbientLight(0x0c0c0c);
@@ -121,46 +128,14 @@ function init() {
 
   // add spotlight for the shadows
   var spotLight = new THREE.SpotLight(0xffffff);
-  spotLight.position.set(-40, 60, 20);
+  spotLight.position.set(100, 60, 20);
   spotLight.castShadow = true;
   scene.add(spotLight);
 
+  createMeshes();
+
   // add the output of the renderer to the html element
   document.getElementById('WebGL-output').appendChild(renderer.domElement);
-
-  var controls = new function () {
-    this.scaleX = 1;
-    this.scaleY = 1;
-    this.scaleZ = 1;
-
-    this.positionX = 0;
-    this.positionY = 4;
-    this.positionZ = 0;
-
-    this.rotationX = 0;
-    this.rotationY = 0;
-    this.rotationZ = 0;
-    this.scale = 1;
-
-    this.translateX = 0;
-    this.translateY = 0;
-    this.translateZ = 0;
-
-    this.visible = true;
-
-    this.origin = false;
-
-    this.translate = function () {
-
-      cube.translateX(controls.translateX);
-      cube.translateY(controls.translateY);
-      cube.translateZ(controls.translateZ);
-
-      controls.positionX = cube.position.x;
-      controls.positionY = cube.position.y;
-      controls.positionZ = cube.position.z;
-    };
-  };
 
   var material = new THREE.MeshNormalMaterial({
     // color: 0x44ff44,
@@ -169,12 +144,14 @@ function init() {
   });
   var geom = new THREE.BoxGeometry(5, 8, 3);
   cube = new THREE.Mesh(geom, material);
+  cube.name = 'mycube';
   cube.position.y = 4;
   cube.castShadow = true;
   scene.add(cube);
 
   var projectPlane = createProjectPlane(new THREE.PlaneGeometry(20, 20, 4, 4));
   // add the sphere to the scene
+  projectPlane.name = 'myplane';
   scene.add(projectPlane);
 
   let boXGeometry = new THREE.BoxGeometry(8, 8, 8);
@@ -186,10 +163,11 @@ function init() {
   boxMesh.position.y = 0;
   boxMesh.position.z = 3;
   boxMesh.castShadow = true;
+  boxMesh.name = 'mybox';
   scene.add(boxMesh);
 
   // let light = new THREE.DirectionalLight(0xffffff, 2);
-  // light.position.set(1, 1, 1);
+  // light.position.set(100, 100, 100);
   // scene.add(light);
 
   // transformControl = new TransformControls(camera, renderer.domElement);
@@ -197,31 +175,33 @@ function init() {
   // transformControl.attach(boxMesh);
   // scene.add(transformControl);
 
+  window.addEventListener('mousemove', function (event) {
+    let mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera( mouse, camera );
+    // const vector = new THREE.Vector3(mouse.x, mouse.y, 1).unproject(camera);
+    // raycaster.set(camera.position, vector.sub(camera.position).normalize());
+    const intersects = raycaster.intersectObjects(scene.children);
+    for ( var i = 0; i < intersects.length; i++ ) {
+      console.log('inserscet->>>>');
+      let element = intersects[i];
+      console.log(`${element.object.type}: ${element.object.name}`);
+      if (element.object && element.object.material && element.object.material.color) {
+        element.object.material.color.set(0xff0000);
+      }
+      console.log('<<<<-inserscet');
+    }
+    // const intersectedObject = intersects[0].object;
+  });
+
   render();
 
   function render() {
     trackballControls.update();
-    cube.visible = controls.visible;
-
-    if (controls.origin) {
-      camera.position.x = -30;
-      camera.position.y = 40;
-      camera.position.z = 30;
-      camera.lookAt(scene.position);
-    }
-
-
-    cube.rotation.x = controls.rotationX;
-    cube.rotation.y = controls.rotationY;
-    cube.rotation.z = controls.rotationZ;
-
-    cube.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
-
 
     requestAnimationFrame(render);
     renderer.render(scene, camera);
-  }
-
-  function initStats() {
   }
 }
