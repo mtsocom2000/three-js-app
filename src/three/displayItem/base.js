@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { DEFAULT_LENGTH } from './../constant';
+import { getRandomColor } from './../utils';
 
 export default class Base {
   constructor(options) {
@@ -10,7 +11,7 @@ export default class Base {
       xSize: DEFAULT_LENGTH,
       ySize: DEFAULT_LENGTH,
       zSize: DEFAULT_LENGTH,
-      color: Math.random() * 0xffffff,
+      color: getRandomColor(),
     }, options);
 
     this.createMesh();
@@ -18,7 +19,7 @@ export default class Base {
 
   /* virtual begin */
   createMesh() {
-    this.mBoxGeometry = new THREE.BoxGeometry(this.mOptions.xSize, this.mOptions.ySize, this.mOptions.zSize);
+    this.mBoxGeometry = new THREE.BoxBufferGeometry(this.mOptions.xSize, this.mOptions.ySize, this.mOptions.zSize);
     this.mBoxMaterial = new THREE.MeshLambertMaterial({
       color: this.mOptions.color,
       //wireframe: true,

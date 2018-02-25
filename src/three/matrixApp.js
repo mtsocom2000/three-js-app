@@ -23,6 +23,6 @@ export default class MatrixApp {
   onMouseDown(event) {
     const x = ( event.clientX / this.mOptions.domElement.clientWidth ) * 2 - 1;
     const y = - ( event.clientY / this.mOptions.domElement.clientHeight ) * 2 + 1;
-    this.mPlayGround.addMatrix({ x, y });
+    this.mPlayGround.addCubeByMousePosition({ x, y });
   }
 }
