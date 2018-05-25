@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { DEFAULT_LENGTH } from './../constant';
+import { DEFAULT_LENGTH } from './../constant/index';
 import { getRandomColor } from './../utils';
 
 export default class Base {
@@ -34,7 +34,7 @@ export default class Base {
     this.mBoxMesh.name = name;
   }
   getName() {
-    return this.mBoxMesh;
+    return this.mBoxMesh.name;
   }
   getMesh() {
     return this.mBoxMesh;

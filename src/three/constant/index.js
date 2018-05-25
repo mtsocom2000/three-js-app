@@ -1,0 +1,10 @@
+export const DEFAULT_LENGTH = 10;
+export const DEFAULT_START_Y = 10 * DEFAULT_LENGTH;
+
+export const DEFAULT_PLAYGROUND_HEIGHT = 8;
+export const DEFAULT_PLAYGROUND_WIDTH = 8;
+export const DEFAULT_PLAYGROUND_DEPTH = 8;
+
+export const DEFAULT_TETRIS_HEIGHT = 3;
+export const DEFAULT_TETRIS_WIDTH = 4;
+export const DEFAULT_TETRIS_DEPTH = 3;

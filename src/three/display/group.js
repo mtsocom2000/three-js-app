@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Base from './base.js';
-import { DEFAULT_LENGTH } from './../constant';
+import { DEFAULT_LENGTH } from './../constant/index';
 import { getMatrixDefination } from './defination';
 
 export default class Group extends Base {

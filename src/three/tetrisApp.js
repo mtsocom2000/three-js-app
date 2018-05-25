@@ -1,6 +1,6 @@
-import PlayGround from './playGround';
+import PlayGround from './app/playground';
 
-export default class MatrixApp {
+export default class TetrisApp {
   constructor() {
     this.mEventManager = null;
     this.mPlayGround = null;

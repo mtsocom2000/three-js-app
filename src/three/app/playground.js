@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import Group from './displayItem/group';
-import { DEFAULT_LENGTH, DEFAULT_START_Y } from './constant';
+import Group from './../display/group';
+import { DEFAULT_LENGTH, DEFAULT_START_Y } from './../constant/index';
 const TrackballControls = require('three-trackballcontrols');
 
 export default class PlayGround {
@@ -15,7 +15,7 @@ export default class PlayGround {
     this.mOptions = Object.assign({
       domElement: document.querySelector('body'),
       showGridHelper: true,
-      showAxisHelper: true,
+      showAxisHelper: false,
     }, options);
 
     this.render = this.render.bind(this);
@@ -38,20 +38,28 @@ export default class PlayGround {
     this.mScene.background = new THREE.Color( 0xffffff );
 
     if (this.mOptions.showGridHelper) {
-      this.mScene.add(new THREE.GridHelper(500, 50));
+      this.mScene.add(new THREE.GridHelper(100, 10));
     }
 
     if (this.mOptions.showAxisHelper) {
       this.mScene.add(new THREE.AxisHelper(50));
     }
 
-    this.mCamera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 10000);
-    //this.mCamera = new THREE.OrthographicCamera(window.innerWidth / -20, window.innerWidth / 20, window.innerHeight / 20, window.innerHeight / -20, 1, 1000);
+    //this.mCamera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 10000);
+    // const aspect = window.innerWidth / window.innerHeight;
+    const ratio = 1 / 2;
+    this.mCamera = new THREE.OrthographicCamera(
+      ratio * window.innerWidth / -2,
+      ratio * window.innerWidth / 2,
+      ratio * window.innerHeight / 2,
+      ratio * window.innerHeight / -2,
+      1,
+      2000);
     // position and point the camera to the center of the scene
-    this.mCamera.position.x = 50;
-    this.mCamera.position.y = 80;
-    this.mCamera.position.z = 130;
-    this.mCamera.lookAt(this.mScene.position);
+    this.mCamera.position.x = 200;
+    this.mCamera.position.y = 240;
+    this.mCamera.position.z = 200;
+    this.mCamera.lookAt(this.mScene.position.add(new THREE.Vector3(20, 0, 20)));
 
     this.mElapsedTime = 0;
     this.mLastTime = 0;
@@ -69,7 +77,7 @@ export default class PlayGround {
     this.mRender.setClearColor(new THREE.Color(0xffffff, 0.8));
     this.mRender.setPixelRatio(window.devicePixelRatio);
     this.mRender.setSize(window.innerWidth, window.innerHeight);
-    this.mRender.shadowMapEnabled = true;
+    this.mRender.shadowMap.enabled = true;
 
     this.mAmbientLight = new THREE.AmbientLight(0xcccccc);
     this.mScene.add(this.mAmbientLight);
@@ -78,9 +86,14 @@ export default class PlayGround {
     this.mDirectionlight.position.set(100, 100, 100);
     this.mScene.add(this.mDirectionlight);
 
-    this.mPlanGeometry = new THREE.PlaneBufferGeometry( 500, 500 );
-    this.mPlanGeometry.rotateX( - Math.PI / 2 );
-    this.mPlane = new THREE.Mesh(this.mPlanGeometry, new THREE.MeshBasicMaterial({ visible: false }));
+    this.mPlanGeometry = new THREE.BoxBufferGeometry(100, 4, 100);
+    // this.mPlanGeometry.rotateX( - Math.PI / 2 );
+    this.mPlane = new THREE.Mesh(this.mPlanGeometry, new THREE.MeshBasicMaterial({
+      color: 0x444488,
+      opacity: 0.5,
+      transparent: true,
+    }));
+    this.mPlane.position.sub(new THREE.Vector3(0, 4 / 2, 0));
     this.mScene.add(this.mPlane);
 
     this.mCurrentCube = null;
@@ -151,6 +164,11 @@ export default class PlayGround {
     // } else {
     //   this.addCube({});
     }
+
+    var timer = Date.now() * 0.0001;
+    this.mCamera.position.x = Math.cos(timer) * 200;
+    this.mCamera.position.z = Math.sin(timer) * 200;
+    this.mCamera.lookAt(this.mScene.position);
 
     // this.mMeshes.forEach(mesh => {
     //   mesh.rotation.x += Math.random() / 10;
