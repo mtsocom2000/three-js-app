@@ -18,17 +18,35 @@ export function extendPaths(paths, extendWidth, keepRightAngle = true) {
   let isClosePath = (nearlyEqual(paths[0].x, paths[paths.length - 1].x) && nearlyEqual(paths[0].x, paths[paths.length - 1].y));
   let prevVector = new THREE.Vector2();
 
-  if (paths.length <= 2) {
-    // build a parallel line and close it...
-    return paths;
-  }
-
   // direction of start point to end point
   let direction = new THREE.Vector2(
     paths[paths.length - 1].x - paths[0].x,
     paths[paths.length - 1].y - paths[0].y);
 
-  let rotation = -PI / 2;
+  let rotation = -PI / 2; 
+
+  if (paths.length === 2) {
+    // build a parallel line and close it...
+    let p0 = paths[0];
+    let p1 = paths[1];
+    let extendVector = new THREE.Vector2(p1.x - p0.x, p1.y - p0.y);
+    extendVector.normalize().multiplyScalar(extendWidth).rotateAround(new THREE.Vector2(0, 0), rotation);
+
+    if (direction.dot(extendVector) > 0) {
+      rotation = PI / 2;
+      extendVector.negate();
+    }
+
+    let v0 = new THREE.Vector2();
+    v0.copy(extendVector).add(new THREE.Vector2(p0.x, p0.y));
+    let v1 = new THREE.Vector2();
+    v1.copy(extendVector).add(new THREE.Vector2(p1.x, p1.y));
+
+    loopPaths.push(v0);
+    loopPaths.push(v1);
+    return loopPaths;
+  }
+
   let directionAdjusted = false;
 
   for (let i = 0; i < paths.length; i++) {
