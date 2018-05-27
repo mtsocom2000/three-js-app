@@ -1,32 +1,8 @@
-import PlayGround from './app/playground';
 import { extendPaths, nearlyEqual } from './utils';
 
 export default class TetrisApp {
   constructor() {
-    this.mEventManager = null;
-    this.mPlayGround = null;
-    this.onMouseDown = this.onMouseDown.bind(this);
-
-    this.mOptions = {
-      domElement: document.querySelector('#WebGL-output'),
-    };
-
     this.testPathFunc();
-  }
-
-  init(options) {
-    this.mPlayGround = new PlayGround(options);
-    this.mPlayGround.init();
-  }
-
-  hookEvents() {
-    document.addEventListener('mousedown', this.onMouseDown, false);
-  }
-
-  onMouseDown(event) {
-    const x = ( event.clientX / this.mOptions.domElement.clientWidth ) * 2 - 1;
-    const y = - ( event.clientY / this.mOptions.domElement.clientHeight ) * 2 + 1;
-    this.mPlayGround.addCubeByMousePosition({ x, y });
   }
 
   testPathFunc() {
